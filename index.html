@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>学习看板</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="学习看板">
+  <meta name="theme-color" content="#5B2C6E">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #5B2C6E;
+      --purple-light: #8B6BA0;
+      --purple-bg: #f5f3f7;
+      --gold: #C8963E;
+      --gold-light: #fdf6ed;
+      --bg: #f8f7fa;
+      --card: #fff;
+      --text: #2d2d3a;
+      --text-secondary: #6b6b7b;
+      --border: #e8e5ef;
+      --danger: #d94a4a;
+      --success: #4a9e6e;
+      --warning: #d9a34a;
+      --tab-height: 64px;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-width: 500px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .header { padding: 16px 20px 8px; flex-shrink: 0; }
+    .header h1 { font-size: 26px; font-weight: 700; color: var(--purple); }
+    .header .subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .main { flex: 1; overflow-y: auto; padding: 0 16px 12px; -webkit-overflow-scrolling: touch; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card {
+      background: var(--card); border-radius: 14px; padding: 14px;
+      margin-bottom: 10px; border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(91,44,110,0.04);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .card-title { font-weight: 600; font-size: 15px; }
+    .card-badge { font-size: 10px; padding: 3px 8px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+    .badge-purple { background: var(--purple-bg); color: var(--purple); }
+    .badge-gold { background: var(--gold-light); color: #a07830; }
+    .badge-red { background: #fef0f0; color: var(--danger); }
+    .badge-green { background: #eef7f1; color: var(--success); }
+    .badge-warning { background: #fef9f0; color: var(--warning); }
+    .card-meta { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .card-actions { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+    .btn { padding: 8px 14px; border-radius: 10px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: var(--purple-bg); color: var(--purple); }
+    .btn:active { opacity: 0.7; }
+    .btn-primary { background: var(--purple); color: white; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-danger { background: #fef0f0; color: var(--danger); }
+    .btn-block { width: 100%; }
+    .progress-bar { height: 6px; border-radius: 3px; background: #e8e5ef; margin-top: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--purple-light), var(--purple)); transition: width 0.4s; }
+    .board-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .board-col { background: #f0edf5; border-radius: 12px; padding: 8px; min-height: 60px; }
+    .board-col h4 { font-size: 11px; font-weight: 700; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; padding: 0 4px; }
+    .mini-card { background: white; border-radius: 8px; padding: 8px 10px; margin-bottom: 4px; font-size: 12px; border: 1px solid #e8e5ef; cursor: pointer; }
+    .mini-card .mini-title { font-weight: 600; font-size: 12px; }
+    .mini-card .mini-meta { font-size: 10px; color: #999; margin-top: 2px; }
+    .heatmap { display: flex; gap: 5px; justify-content: space-between; }
+    .heat-cell { width: 13%; aspect-ratio: 1; border-radius: 6px; background: #e8e5ef; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; font-weight: 600; }
+    .heat-cell.l1 { background: #d4c9df; color: #666; }
+    .heat-cell.l2 { background: #b8a5c8; color: #444; }
+    .heat-cell.l3 { background: #9b80b0; color: white; }
+    .heat-cell.l4 { background: var(--purple-light); color: white; }
+    .heat-cell.l5 { background: var(--purple); color: white; }
+    .heat-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-secondary); margin-top: 4px; }
+    .heat-labels span { width: 13%; text-align: center; }
+    .tag-bars { margin-top: 8px; }
+    .tag-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 11px; }
+    .tag-bar-row .tag-name { width: 40px; color: var(--text-secondary); }
+    .tag-bar-row .tag-bar { flex: 1; height: 8px; border-radius: 4px; background: #e8e5ef; overflow: hidden; }
+    .tag-bar-row .tag-fill { height: 100%; border-radius: 4px; }
+    .tag-fill.作业 { background: var(--purple); }
+    .tag-fill.阅读 { background: var(--gold); }
+    .tag-fill.项目 { background: #5b8c5a; }
+    .tag-fill.其他 { background: #8b8b9e; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card { background: var(--card); border-radius: 14px; padding: 16px; text-align: center; border: 1px solid var(--border); }
+    .stat-num { font-size: 28px; font-weight: 700; color: var(--purple); }
+    .stat-num.gold { color: var(--gold); }
+    .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+    .tabbar { display: flex; border-top: 1px solid var(--border); background: white; flex-shrink: 0; height: var(--tab-height); padding-bottom: env(safe-area-inset-bottom, 0); }
+    .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); font-size: 10px; font-weight: 500; gap: 2px; }
+    .tab-item .tab-icon { font-size: 22px; }
+    .tab-item.active { color: var(--purple); font-weight: 700; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: flex-end; }
+    .modal-overlay.show { display: flex; }
+    .modal-sheet { background: white; border-radius: 20px 20px 0 0; padding: 20px 16px 24px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
+    .modal-sheet h3 { font-size: 18px; margin-bottom: 14px; color: var(--purple); }
+    .modal-sheet input, .modal-sheet select, .modal-sheet textarea { width: 100%; padding: 10px 12px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; background: #faf9fc; }
+    .modal-sheet .row { display: flex; gap: 8px; }
+    .modal-sheet .row > * { flex: 1; }
+    .modal-sheet .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+    .section-title { font-size: 13px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin: 16px 0 8px; padding-left: 2px; }
+    .empty-card { text-align: center; color: #bbb; padding: 20px; font-size: 13px; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1 id="headerTitle">📚 我的课程</h1>
+    <div class="subtitle" id="headerSub"></div>
+  </div>
+  <div class="main" id="mainContent">
+    <div class="tab-content active" id="tab-courses"></div>
+    <div class="tab-content" id="tab-journal"></div>
+    <div class="tab-content" id="tab-me"></div>
+  </div>
+  <div class="tabbar">
+    <div class="tab-item active" data-tab="courses" onclick="switchTab('courses')"><span class="tab-icon">📚</span>课程</div>
+    <div class="tab-item" data-tab="journal" onclick="switchTab('journal')"><span class="tab-icon">📝</span>速记</div>
+    <div class="tab-item" data-tab="me" onclick="switchTab('me')"><span class="tab-icon">👤</span>我的</div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal"><div class="modal-sheet" id="modalSheet"></div></div>
+<script>
+const STORAGE_KEY = 'study_dashboard_v2';
+let DB = { courses: [], assignments: [], journals: [], semesterStart: '2026-09-01', semesterEnd: '2026-12-20', streak: 0, lastJournalDate: '' };
+
+function loadDB() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) { try { const d = JSON.parse(raw); DB = { ...DB, ...d }; } catch(e) {} }
+  if (DB.courses.length === 0) {
+    const todayStr = today();
+    const cid = uid();
+    DB.courses = [{ id: cid, name: '数据挖掘', code: 'DM2026', start: '2026-09-01', end: '2026-12-15', color: '#5B2C6E' }];
+    DB.assignments = [{ id: uid(), courseId: cid, title: 'Assignment 1: 关联规则挖掘', due: shiftDate(todayStr, 7), status: '进行中', score: null, notes: '' }];
+    DB.journals = [{ id: uid(), date: todayStr, content: '读了一篇关联规则论文', tag: '阅读', duration: 1.5 }];
+    saveDB();
+  }
+}
+function saveDB() { localStorage.setItem(STORAGE_KEY, JSON.stringify(DB)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function shiftDate(ds, days) { const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate() + days); return d.toISOString().split('T')[0]; }
+function daysBetween(d1, d2) { return Math.floor((new Date(d2 + 'T00:00:00') - new Date(d1 + 'T00:00:00')) / 86400000); }
+function weekStart() { const d = new Date(); d.setDate(d.getDate() - d.getDay()); return d.toISOString().split('T')[0]; }
+function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function semesterProgress() { const total = daysBetween(DB.semesterStart, DB.semesterEnd); const elapsed = daysBetween(DB.semesterStart, today()); if (total <= 0) return 0; return Math.min(100, Math.max(0, Math.round(elapsed / total * 100))); }
+function updateStreak() { const ts = today(); const ys = shiftDate(ts, -1); if (DB.lastJournalDate === ts) return; DB.streak = (DB.lastJournalDate === ys) ? DB.streak + 1 : 1; DB.lastJournalDate = ts; }
+
+let currentTab = 'courses';
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector('.tab-item[data-tab="' + tab + '"]').classList.add('active');
+  renderAll();
+  document.getElementById('mainContent').scrollTop = 0;
+}
+function updateHeader() {
+  document.getElementById('headerTitle').textContent = { courses: '📚 我的课程', journal: '📝 每日速记', me: '👤 我的' }[currentTab] || '';
+  document.getElementById('headerSub').textContent = {
+    courses: DB.courses.length + '门课程 · ' + DB.assignments.length + '项作业',
+    journal: '连续打卡 ' + DB.streak + ' 天',
+    me: '学期已过 ' + semesterProgress() + '%'
+  }[currentTab] || '';
+}
+
+function renderAll() { renderCourses(); renderJournal(); renderMe(); updateHeader(); }
+
+function renderCourses() {
+  const c = document.getElementById('tab-courses');
+  let h = '<div class="card"><div style="font-weight:600;font-size:14px;">📅 学期进度</div><div class="card-meta">' + DB.semesterStart + ' → ' + DB.semesterEnd + '</div><div class="progress-bar"><div class="progress-fill" style="width:' + semesterProgress() + '%"></div></div><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">' + semesterProgress() + '% · 剩余约 ' + daysBetween(today(), DB.semesterEnd) + ' 天</div></div>';
+  if (DB.courses.length === 0) {
+    h += '<div class="empty-card">还没有课程，点击下方按钮添加</div>';
+  } else {
+    DB.courses.forEach(co => {
+      const ca = DB.assignments.filter(a => a.courseId === co.id);
+      const done = ca.filter(a => a.status === '已提交' || a.status === '已评分').length;
+      h += '<div class="card"><div class="card-header"><span class="card-title">📖 ' + esc(co.name) + '</span><span class="card-badge badge-purple">' + esc(co.code || '无代码') + '</span></div><div class="card-meta">作业 ' + done + '/' + ca.length + ' 完成</div>';
+      if (ca.length > 0) h += '<div class="progress-bar"><div class="progress-fill" style="width:' + Math.round(done/ca.length*100) + '%"></div></div>';
+      h += '<div class="card-actions"><button class="btn btn-sm" onclick="openCourseEdit(\'' + co.id + '\')">编辑</button><button class="btn btn-sm btn-danger" onclick="deleteCourse(\'' + co.id + '\')">删除</button></div></div>';
+    });
+  }
+  h += '<div class="section-title">📋 作业看板</div><div class="board-row">';
+  [{key:'进行中',label:'进行中'},{key:'已提交',label:'已提交'},{key:'已评分',label:'已评分'}].forEach(s => {
+    const items = DB.assignments.filter(a => a.status === s.key);
+    h += '<div class="board-col"><h4>' + s.label + ' (' + items.length + ')</h4>';
+    if (items.length === 0) { h += '<div style="font-size:11px;color:#bbb;padding:8px;text-align:center;">暂无</div>'; }
+    else { items.forEach(a => {
+      const co = DB.courses.find(c2 => c2.id === a.courseId);
+      const dd = daysBetween(today(), a.due);
+      let db = '', dt = '';
+      if (a.status === '已评分') { db = 'badge-green'; dt = a.score !== null ? '得分: ' + a.score : '已评分'; }
+      else if (dd < 0) { db = 'badge-red'; dt = '逾期 ' + Math.abs(dd) + ' 天'; }
+      else if (dd === 0) { db = 'badge-warning'; dt = '今天截止'; }
+      else if (dd <= 2) { db = 'badge-warning'; dt = dd + ' 天后'; }
+      else { db = 'badge-green'; dt = dd + ' 天后'; }
+      h += '<div class="mini-card" onclick="openAssignmentEdit(\'' + a.id + '\')"><div class="mini-title">' + esc(a.title) + '</div><div class="mini-meta">' + (co ? esc(co.name) : '未知课程') + ' · <span class="card-badge ' + db + '">' + dt + '</span></div></div>';
+    }); }
+    h += '</div>';
+  });
+  h += '</div><button class="btn btn-primary btn-block" style="margin-top:6px;" onclick="openCourseEdit()">+ 新增课程</button><button class="btn btn-block" style="margin-top:6px;" onclick="openAssignmentEdit()">+ 新增作业</button>';
+  c.innerHTML = h;
+}
+
+function renderJournal() {
+  const c = document.getElementById('tab-journal');
+  const ts = today(); const ws = weekStart();
+  const tj = DB.journals.filter(j => j.date === ts);
+  const wj = DB.journals.filter(j => j.date >= ws && j.date <= ts);
+  const wt = wj.reduce((s, j) => s + j.duration, 0);
+  const tags = { '作业': 0, '阅读': 0, '项目': 0, '其他': 0 };
+  wj.forEach(j => { if (tags[j.tag] !== undefined) tags[j.tag] += j.duration; else tags['其他'] += j.duration; });
+  let h = '<div class="card"><div style="font-weight:600;font-size:14px;margin-bottom:8px;">✍️ 快速记录</div><form onsubmit="addJournal(event)" style="display:flex;flex-direction:column;gap:6px;"><input type="text" id="journalContent" placeholder="做了什么？（例如：写数据挖掘作业）" required><div class="row"><select id="journalTag"><option value="作业">📝 作业</option><option value="阅读">📖 阅读</option><option value="项目">💻 项目</option><option value="其他">📌 其他</option></select><input type="number" id="journalDuration" placeholder="小时" step="0.5" min="0.5" max="12" value="1" style="flex:0.6;"></div><button type="submit" class="btn btn-primary btn-block">记录</button></form></div>';
+  h += '<div class="section-title">📋 今日记录</div>';
+  if (tj.length === 0) { h += '<div class="card empty-card">今天还没有记录 ✨</div>'; }
+  else { tj.forEach(j => { h += '<div class="card"><div class="card-header"><span style="font-weight:500;">' + esc(j.content) + '</span><span class="card-badge badge-gold">' + j.tag + '</span></div><div class="card-meta">⏱ ' + j.duration + 'h</div><div class="card-actions"><button class="btn btn-sm btn-danger" onclick="deleteJournal(\'' + j.id + '\')">删除</button></div></div>'; }); }
+  h += '<div class="section-title">📊 本周统计</div><div class="card"><div style="font-weight:600;font-size:14px;">总时长: ' + wt.toFixed(1) + 'h</div><div class="tag-bars">';
+  ['作业','阅读','项目','其他'].forEach(tag => { const pct = wt > 0 ? Math.round(tags[tag] / wt * 100) : 0; h += '<div class="tag-bar-row"><span class="tag-name">' + tag + '</span><div class="tag-bar"><div class="tag-fill ' + tag + '" style="width:' + pct + '%"></div></div><span>' + pct + '%</span></div>'; });
+  h += '</div></div><div class="section-title">🔥 本周热力图</div><div class="card"><div class="heatmap">';
+  for (let i = 0; i < 7; i++) { const d = shiftDate(ws, i); const dt2 = DB.journals.filter(j => j.date === d).reduce((s, j) => s + j.duration, 0); let lv = 0; if (dt2 > 0) lv = 1; if (dt2 >= 2) lv = 2; if (dt2 >= 4) lv = 3; if (dt2 >= 6) lv = 4; if (dt2 >= 8) lv = 5; h += '<div class="heat-cell l' + lv + '"' + (d === ts ? ' style="border:2px solid var(--purple);"' : '') + '>' + (lv > 0 ? lv : '') + '</div>'; }
+  h += '</div><div class="heat-labels"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div></div>';
+  c.innerHTML = h;
+}
+
+function renderMe() {
+  const c = document.getElementById('tab-me');
+  const th = DB.journals.reduce((s, j) => s + j.duration, 0);
+  const ta = DB.assignments.length;
+  const da = DB.assignments.filter(a => a.status === '已评分' || a.status === '已提交').length;
+  const ar = ta > 0 ? Math.round(da / ta * 100) : 0;
+  let h = '<div class="stat-grid"><div class="stat-card"><div class="stat-num">' + semesterProgress() + '%</div><div class="stat-label">学期进度</div></div><div class="stat-card"><div class="stat-num gold">' + th.toFixed(0) + 'h</div><div class="stat-label">总学习时长</div></div><div class="stat-card"><div class="stat-num">' + ar + '%</div><div class="stat-label">作业完成率</div></div><div class="stat-card"><div class="stat-num gold">' + DB.streak + '</div><div class="stat-label">连续打卡天数</div></div></div>';
+  h += '<div class="section-title">📅 学期设置</div><div class="card"><form onsubmit="updateSemester(event)"><div class="row"><input type="date" id="semStart" value="' + DB.semesterStart + '"><input type="date" id="semEnd" value="' + DB.semesterEnd + '"></div><button type="submit" class="btn btn-primary btn-block" style="margin-top:6px;">更新学期日期</button></form></div>';
+  h += '<div class="section-title">💾 数据管理</div><div class="card" style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" onclick="exportData()">📤 导出数据</button><button class="btn btn-danger" onclick="resetData()">🗑 重置所有数据</button></div>';
+  c.innerHTML = h;
+}
+
+function showModal(title, bodyHtml, onSave) {
+  document.getElementById('modalSheet').innerHTML = '<h3>' + title + '</h3>' + bodyHtml + '<div class="actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modalSaveBtn">保存</button></div>';
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('modalSaveBtn').onclick = function() { onSave(); closeModal(); };
+}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+function openCourseEdit(id) {
+  const co = id ? DB.courses.find(c2 => c2.id === id) : null;
+  showModal(co ? '编辑课程' : '新增课程',
+    '<input type="text" id="cName" value="' + (co ? esc(co.name) : '') + '" placeholder="课程名称" required><input type="text" id="cCode" value="' + (co ? esc(co.code || '') : '') + '" placeholder="课程代码（选填）"><div class="row"><input type="date" id="cStart" value="' + (co ? co.start : DB.semesterStart) + '"><input type="date" id="cEnd" value="' + (co ? co.end : DB.semesterEnd) + '"></div>',
+    function() {
+      const d = { name: document.getElementById('cName').value.trim(), code: document.getElementById('cCode').value.trim(), start: document.getElementById('cStart').value, end: document.getElementById('cEnd').value, color: '#5B2C6E' };
+      if (!d.name) return;
+      if (co) { Object.assign(co, d); } else { DB.courses.push({ id: uid(), ...d }); }
+      saveDB(); renderAll();
+    });
+}
+function deleteCourse(id) {
+  if (!confirm('删除课程将同时删除该课程下的所有作业，确定？')) return;
+  DB.courses = DB.courses.filter(c2 => c2.id !== id);
+  DB.assignments = DB.assignments.filter(a => a.courseId !== id);
+  saveDB(); renderAll();
+}
+function openAssignmentEdit(id) {
+  const a = id ? DB.assignments.find(a2 => a2.id === id) : null;
+  const opts = DB.courses.map(c2 => '<option value="' + c2.id + '"' + (a && a.courseId === c2.id ? ' selected' : '') + '>' + esc(c2.name) + '</option>').join('') || '<option value="">请先添加课程</option>';
+  showModal(a ? '编辑作业' : '新增作业',
+    '<input type="text" id="aTitle" value="' + (a ? esc(a.title) : '') + '" placeholder="作业名称" required><select id="aCourse">' + opts + '</select><div class="row"><input type="date" id="aDue" value="' + (a ? a.due : shiftDate(today(), 7)) + '"><select id="aStatus"><option value="进行中"' + (a && a.status === '进行中' ? ' selected' : '') + '>进行中</option><option value="已提交"' + (a && a.status === '已提交' ? ' selected' : '') + '>已提交</option><option value="已评分"' + (a && a.status === '已评分' ? ' selected' : '') + '>已评分</option></select></div><input type="number" id="aScore" value="' + (a && a.score !== null ? a.score : '') + '" placeholder="分数（选填）" step="0.1" min="0" max="100"><textarea id="aNotes" rows="2" placeholder="备注">' + (a ? esc(a.notes || '') : '') + '</textarea>',
+    function() {
+      const courseId = document.getElementById('aCourse').value;
+      const title = document.getElementById('aTitle').value.trim();
+      if (!title || !courseId) return;
+      const d = { courseId, title, due: document.getElementById('aDue').value, status: document.getElementById('aStatus').value, score: document.getElementById('aScore').value ? parseFloat(document.getElementById('aScore').value) : null, notes: document.getElementById('aNotes').value.trim() };
+      if (a) { Object.assign(a, d); } else { DB.assignments.push({ id: uid(), ...d }); }
+      saveDB(); renderAll();
+    });
+}
+function addJournal(e) {
+  e.preventDefault();
+  const content = document.getElementById('journalContent').value.trim();
+  if (!content) return;
+  DB.journals.push({ id: uid(), date: today(), content, tag: document.getElementById('journalTag').value, duration: parseFloat(document.getElementById('journalDuration').value) || 1 });
+  updateStreak(); saveDB(); renderAll();
+}
+function deleteJournal(id) { DB.journals = DB.journals.filter(j => j.id !== id); saveDB(); renderAll(); }
+function updateSemester(e) { e.preventDefault(); DB.semesterStart = document.getElementById('semStart').value; DB.semesterEnd = document.getElementById('semEnd').value; saveDB(); renderAll(); }
+function exportData() {
+  const blob = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = '学习看板_备份_' + today() + '.json'; a.click();
+  URL.revokeObjectURL(url); alert('数据已导出！');
+}
+function resetData() {
+  if (!confirm('确定要删除所有数据吗？此操作不可恢复！\n建议先导出备份。')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+loadDB(); renderAll();
+</script>
+</body>
+</html>
+```
