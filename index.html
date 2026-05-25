@@ -29,71 +29,32 @@
       --tab-height: 56px;
     }
     html, body {
-      height: 100%;
-      overflow: hidden;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      height: 100%; overflow: hidden;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-overflow-scrolling: touch;
+      background: var(--bg); color: var(--text);
+      user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
     }
     .app {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      height: 100dvh;
-      max-width: 500px;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
+      display: flex; flex-direction: column;
+      height: 100vh; height: 100dvh;
+      max-width: 500px; margin: 0 auto; position: relative; overflow: hidden;
     }
-    /* 顶部固定 */
-    .header {
-      padding: 12px 20px 8px;
-      flex-shrink: 0;
-      background: var(--bg);
-      z-index: 10;
-    }
+    .header { padding: 12px 20px 8px; flex-shrink: 0; background: var(--bg); z-index: 10; }
     .header h1 { font-size: 26px; font-weight: 700; color: var(--purple); }
     .header .subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-    /* 中间可滑动 */
-    .main {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 0 16px 8px;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-    }
+    .main { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 0 16px 8px; -webkit-overflow-scrolling: touch; }
     .tab-content { display: none; min-height: 100%; }
     .tab-content.active { display: block; }
-    /* 底部固定 */
     .tabbar {
-      display: flex;
-      border-top: 1px solid var(--border);
-      background: white;
-      flex-shrink: 0;
-      height: var(--tab-height);
-      padding-bottom: env(safe-area-inset-bottom, 0);
-      z-index: 10;
+      display: flex; border-top: 1px solid var(--border); background: white;
+      flex-shrink: 0; height: var(--tab-height); padding-bottom: env(safe-area-inset-bottom, 0); z-index: 10;
     }
     .tab-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text-secondary);
-      font-size: 10px;
-      font-weight: 500;
-      gap: 2px;
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-secondary); font-size: 10px; font-weight: 500; gap: 2px;
     }
     .tab-item .tab-icon { font-size: 22px; }
     .tab-item.active { color: var(--purple); font-weight: 700; }
@@ -124,32 +85,39 @@
     .board-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .board-col { background: #f0edf5; border-radius: 12px; padding: 8px; min-height: 60px; }
     .board-col h4 { font-size: 11px; font-weight: 700; color: var(--purple-light); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; padding: 0 4px; }
-    .mini-card { background: white; border-radius: 8px; padding: 8px 10px; margin-bottom: 4px; font-size: 12px; border: 1px solid #e8e5ef; cursor: pointer; }
+    .mini-card { background: white; border-radius: 8px; padding: 8px 10px; margin-bottom: 4px; font-size: 12px; border: 1px solid #e8e5ef; cursor: pointer; position: relative; transition: 0.2s; }
+    .mini-card:active { background: #f5f3f7; }
     .mini-card .mini-title { font-weight: 600; font-size: 12px; }
     .mini-card .mini-meta { font-size: 10px; color: #999; margin-top: 2px; }
-    .heatmap { display: flex; gap: 5px; justify-content: space-between; }
-    .heat-cell { width: 13%; aspect-ratio: 1; border-radius: 6px; background: #e8e5ef; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; font-weight: 600; }
-    .heat-cell.l1 { background: #d4c9df; color: #666; }
-    .heat-cell.l2 { background: #b8a5c8; color: #444; }
-    .heat-cell.l3 { background: #9b80b0; color: white; }
-    .heat-cell.l4 { background: var(--purple-light); color: white; }
-    .heat-cell.l5 { background: var(--purple); color: white; }
-    .heat-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-secondary); margin-top: 4px; }
-    .heat-labels span { width: 13%; text-align: center; }
-    .tag-bars { margin-top: 8px; }
-    .tag-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 11px; }
-    .tag-bar-row .tag-name { width: 40px; color: var(--text-secondary); }
-    .tag-bar-row .tag-bar { flex: 1; height: 8px; border-radius: 4px; background: #e8e5ef; overflow: hidden; }
-    .tag-bar-row .tag-fill { height: 100%; border-radius: 4px; }
-    .tag-fill.作业 { background: var(--purple); }
-    .tag-fill.阅读 { background: var(--gold); }
-    .tag-fill.项目 { background: #5b8c5a; }
-    .tag-fill.其他 { background: #8b8b9e; }
+    .mini-card.selected-for-delete { background: #fef0f0; border-color: var(--danger); }
+
+    /* 时间选择器 */
+    .time-picker { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .time-picker input { width: 50px; text-align: center; font-size: 16px; font-weight: 600; padding: 6px; }
+    .time-picker span { font-size: 13px; color: var(--text-secondary); }
+
+    /* Bar Chart 样式 (iOS 屏幕使用时间风格) */
+    .bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding: 4px 0; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+    .bar-value { font-size: 9px; font-weight: 600; color: var(--text-secondary); }
+    .bar-fill {
+      width: 100%; border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--purple-light), var(--purple));
+      min-height: 2px; transition: height 0.4s;
+    }
+    .bar-fill.today { background: linear-gradient(180deg, var(--gold), #d9a34a); }
+    .bar-label { font-size: 9px; color: var(--text-secondary); margin-top: 2px; }
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .stat-card { background: var(--card); border-radius: 14px; padding: 16px; text-align: center; border: 1px solid var(--border); }
     .stat-num { font-size: 28px; font-weight: 700; color: var(--purple); }
     .stat-num.gold { color: var(--gold); }
     .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* Term 管理 */
+    .term-card { position: relative; }
+    .term-card.active-term { border: 2px solid var(--purple); }
+    .term-card .active-badge { position: absolute; top: 8px; right: 8px; font-size: 10px; background: var(--purple); color: white; padding: 2px 8px; border-radius: 8px; }
+
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: flex-end; }
     .modal-overlay.show { display: flex; }
     .modal-sheet { background: white; border-radius: 20px 20px 0 0; padding: 20px 16px 24px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
@@ -160,8 +128,11 @@
     .modal-sheet .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
     .section-title { font-size: 13px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin: 16px 0 8px; padding-left: 2px; }
     .empty-card { text-align: center; color: #bbb; padding: 20px; font-size: 13px; }
-    /* 底部留白，防止最后一项被Tab遮挡 */
     .main::after { content: ''; display: block; height: 8px; }
+    /* 删除模式提示 */
+    .delete-hint { background: var(--danger); color: white; text-align: center; padding: 6px; font-size: 12px; border-radius: 8px; margin-bottom: 8px; display: none; }
+    .delete-hint.show { display: block; }
+    .delete-mode .mini-card { opacity: 0.7; }
   </style>
 </head>
 <body>
@@ -183,8 +154,12 @@
 </div>
 <div class="modal-overlay" id="modal"><div class="modal-sheet" id="modalSheet"></div></div>
 <script>
-const STORAGE_KEY = 'study_dashboard_v2';
-let DB = { courses: [], assignments: [], journals: [], semesterStart: '2026-09-01', semesterEnd: '2026-12-20', streak: 0, lastJournalDate: '' };
+const STORAGE_KEY = 'study_dashboard_v3';
+let DB = {
+  courses: [], assignments: [], journals: [],
+  terms: [{ id: 'term1', name: 'Term 1', start: '2026-09-01', end: '2026-12-20', active: true }],
+  streak: 0, lastJournalDate: '', deleteMode: false
+};
 
 function loadDB() {
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -192,9 +167,10 @@ function loadDB() {
   if (DB.courses.length === 0) {
     const todayStr = today();
     const cid = uid();
-    DB.courses = [{ id: cid, name: '数据挖掘', code: 'DM2026', start: '2026-09-01', end: '2026-12-15', color: '#5B2C6E' }];
+    DB.courses = [{ id: cid, name: '数据挖掘', code: 'DM2026', termId: 'term1', color: '#5B2C6E' }];
     DB.assignments = [{ id: uid(), courseId: cid, title: 'Assignment 1: 关联规则挖掘', due: shiftDate(todayStr, 7), status: '进行中', score: null, notes: '' }];
-    DB.journals = [{ id: uid(), date: todayStr, content: '读了一篇关联规则论文', tag: '阅读', duration: 1.5 }];
+    DB.journals = [{ id: uid(), date: todayStr, content: '读了一篇关联规则论文', tag: '阅读', durationMinutes: 90 }];
+    if (!DB.terms || DB.terms.length === 0) DB.terms = [{ id: 'term1', name: 'Term 1', start: '2026-09-01', end: '2026-12-20', active: true }];
     saveDB();
   }
 }
@@ -205,12 +181,19 @@ function shiftDate(ds, days) { const d = new Date(ds + 'T00:00:00'); d.setDate(d
 function daysBetween(d1, d2) { return Math.floor((new Date(d2 + 'T00:00:00') - new Date(d1 + 'T00:00:00')) / 86400000); }
 function weekStart() { const d = new Date(); d.setDate(d.getDate() - d.getDay()); return d.toISOString().split('T')[0]; }
 function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function semesterProgress() { const total = daysBetween(DB.semesterStart, DB.semesterEnd); const elapsed = daysBetween(DB.semesterStart, today()); if (total <= 0) return 0; return Math.min(100, Math.max(0, Math.round(elapsed / total * 100))); }
+function getActiveTerm() { return DB.terms.find(t => t.active) || DB.terms[0]; }
+function semesterProgress() {
+  const term = getActiveTerm(); if (!term) return 0;
+  const total = daysBetween(term.start, term.end);
+  const elapsed = daysBetween(term.start, today());
+  if (total <= 0) return 0;
+  return Math.min(100, Math.max(0, Math.round(elapsed / total * 100)));
+}
 function updateStreak() { const ts = today(); const ys = shiftDate(ts, -1); if (DB.lastJournalDate === ts) return; DB.streak = (DB.lastJournalDate === ys) ? DB.streak + 1 : 1; DB.lastJournalDate = ts; }
 
 let currentTab = 'courses';
 function switchTab(tab) {
-  currentTab = tab;
+  currentTab = tab; DB.deleteMode = false;
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
@@ -219,19 +202,25 @@ function switchTab(tab) {
   document.getElementById('mainContent').scrollTop = 0;
 }
 function updateHeader() {
+  const activeTerm = getActiveTerm();
   document.getElementById('headerTitle').textContent = { courses: '📚 我的课程', journal: '📝 每日速记', me: '👤 我的' }[currentTab] || '';
   document.getElementById('headerSub').textContent = {
-    courses: DB.courses.length + '门课程 · ' + DB.assignments.length + '项作业',
+    courses: (activeTerm ? activeTerm.name + ' · ' : '') + DB.courses.length + '门课程 · ' + DB.assignments.length + '项作业',
     journal: '连续打卡 ' + DB.streak + ' 天',
-    me: '学期已过 ' + semesterProgress() + '%'
+    me: (activeTerm ? activeTerm.name + ' 已过 ' + semesterProgress() + '%' : '未设置学期')
   }[currentTab] || '';
 }
 
 function renderAll() { renderCourses(); renderJournal(); renderMe(); updateHeader(); }
 
+// ==================== 课程Tab ====================
 function renderCourses() {
   const c = document.getElementById('tab-courses');
-  let h = '<div class="card"><div style="font-weight:600;font-size:14px;">📅 学期进度</div><div class="card-meta">' + DB.semesterStart + ' → ' + DB.semesterEnd + '</div><div class="progress-bar"><div class="progress-fill" style="width:' + semesterProgress() + '%"></div></div><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">' + semesterProgress() + '% · 剩余约 ' + daysBetween(today(), DB.semesterEnd) + ' 天</div></div>';
+  const activeTerm = getActiveTerm();
+  let h = '';
+  if (activeTerm) {
+    h += '<div class="card"><div style="font-weight:600;font-size:14px;">📅 ' + esc(activeTerm.name) + ' 进度</div><div class="card-meta">' + activeTerm.start + ' → ' + activeTerm.end + '</div><div class="progress-bar"><div class="progress-fill" style="width:' + semesterProgress() + '%"></div></div><div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">' + semesterProgress() + '% · 剩余约 ' + daysBetween(today(), activeTerm.end) + ' 天</div></div>';
+  }
   if (DB.courses.length === 0) {
     h += '<div class="empty-card">还没有课程，点击下方按钮添加</div>';
   } else {
@@ -243,7 +232,10 @@ function renderCourses() {
       h += '<div class="card-actions"><button class="btn btn-sm" onclick="openCourseEdit(\'' + co.id + '\')">编辑</button><button class="btn btn-sm btn-danger" onclick="deleteCourse(\'' + co.id + '\')">删除</button></div></div>';
     });
   }
-  h += '<div class="section-title">📋 作业看板</div><div class="board-row">';
+  // 作业看板 + 长按删除
+  h += '<div class="section-title">📋 作业看板</div>';
+  if (DB.deleteMode) h += '<div class="delete-hint show">点击作业卡片选中删除 · <button class="btn btn-sm" style="background:white;color:var(--danger);" onclick="cancelDeleteMode()">取消</button></div>';
+  h += '<div class="board-row">';
   [{key:'进行中',label:'进行中'},{key:'已提交',label:'已提交'},{key:'已评分',label:'已评分'}].forEach(s => {
     const items = DB.assignments.filter(a => a.status === s.key);
     h += '<div class="board-col"><h4>' + s.label + ' (' + items.length + ')</h4>';
@@ -257,46 +249,172 @@ function renderCourses() {
       else if (dd === 0) { db = 'badge-warning'; dt = '今天截止'; }
       else if (dd <= 2) { db = 'badge-warning'; dt = dd + ' 天后'; }
       else { db = 'badge-green'; dt = dd + ' 天后'; }
-      h += '<div class="mini-card" onclick="openAssignmentEdit(\'' + a.id + '\')"><div class="mini-title">' + esc(a.title) + '</div><div class="mini-meta">' + (co ? esc(co.name) : '未知课程') + ' · <span class="card-badge ' + db + '">' + dt + '</span></div></div>';
+      const selectedClass = DB._selectedForDelete && DB._selectedForDelete.has(a.id) ? ' selected-for-delete' : '';
+      h += '<div class="mini-card' + selectedClass + '" id="mini-' + a.id + '" data-assignment-id="' + a.id + '">';
+      h += '<div class="mini-title">' + esc(a.title) + '</div>';
+      h += '<div class="mini-meta">' + (co ? esc(co.name) : '未知课程') + ' · <span class="card-badge ' + db + '">' + dt + '</span></div>';
+      h += '</div>';
     }); }
     h += '</div>';
   });
-  h += '</div><button class="btn btn-primary btn-block" style="margin-top:6px;" onclick="openCourseEdit()">+ 新增课程</button><button class="btn btn-block" style="margin-top:6px;" onclick="openAssignmentEdit()">+ 新增作业</button>';
+  h += '</div>';
+  h += '<button class="btn btn-block" style="margin-top:6px;" onclick="toggleDeleteMode()">🗑 删除作业模式</button>';
+  h += '<button class="btn btn-primary btn-block" style="margin-top:6px;" onclick="openCourseEdit()">+ 新增课程</button>';
+  h += '<button class="btn btn-block" style="margin-top:6px;" onclick="openAssignmentEdit()">+ 新增作业</button>';
   c.innerHTML = h;
+  // 重新绑定长按事件
+  bindLongPress();
 }
 
+// ==================== 速记Tab（优化时间选择器 + Bar Chart） ====================
 function renderJournal() {
   const c = document.getElementById('tab-journal');
   const ts = today(); const ws = weekStart();
   const tj = DB.journals.filter(j => j.date === ts);
   const wj = DB.journals.filter(j => j.date >= ws && j.date <= ts);
-  const wt = wj.reduce((s, j) => s + j.duration, 0);
+  const wt = wj.reduce((s, j) => s + j.durationMinutes, 0);
   const tags = { '作业': 0, '阅读': 0, '项目': 0, '其他': 0 };
-  wj.forEach(j => { if (tags[j.tag] !== undefined) tags[j.tag] += j.duration; else tags['其他'] += j.duration; });
-  let h = '<div class="card"><div style="font-weight:600;font-size:14px;margin-bottom:8px;">✍️ 快速记录</div><form onsubmit="addJournal(event)" style="display:flex;flex-direction:column;gap:6px;"><input type="text" id="journalContent" placeholder="做了什么？（例如：写数据挖掘作业）" required><div class="row"><select id="journalTag"><option value="作业">📝 作业</option><option value="阅读">📖 阅读</option><option value="项目">💻 项目</option><option value="其他">📌 其他</option></select><input type="number" id="journalDuration" placeholder="小时" step="0.5" min="0.5" max="12" value="1" style="flex:0.6;"></div><button type="submit" class="btn btn-primary btn-block">记录</button></form></div>';
+  wj.forEach(j => { if (tags[j.tag] !== undefined) tags[j.tag] += j.durationMinutes; else tags['其他'] += j.durationMinutes; });
+  
+  let h = '';
+  // 快速记录（精确到分钟）
+  h += '<div class="card"><div style="font-weight:600;font-size:14px;margin-bottom:8px;">✍️ 快速记录</div>';
+  h += '<form onsubmit="addJournal(event)" style="display:flex;flex-direction:column;gap:8px;">';
+  h += '<input type="text" id="journalContent" placeholder="做了什么？（例如：写数据挖掘作业）" required>';
+  h += '<div class="row"><select id="journalTag"><option value="作业">📝 作业</option><option value="阅读">📖 阅读</option><option value="项目">💻 项目</option><option value="其他">📌 其他</option></select></div>';
+  h += '<div class="time-picker"><span>⏱ 用时</span><input type="number" id="journalHours" value="0" min="0" max="12" step="1"> <span>小时</span><input type="number" id="journalMinutes" value="30" min="0" max="59" step="5"> <span>分钟</span></div>';
+  h += '<button type="submit" class="btn btn-primary btn-block">记录</button></form></div>';
+
+  // 今日记录
   h += '<div class="section-title">📋 今日记录</div>';
   if (tj.length === 0) { h += '<div class="card empty-card">今天还没有记录 ✨</div>'; }
-  else { tj.forEach(j => { h += '<div class="card"><div class="card-header"><span style="font-weight:500;">' + esc(j.content) + '</span><span class="card-badge badge-gold">' + j.tag + '</span></div><div class="card-meta">⏱ ' + j.duration + 'h</div><div class="card-actions"><button class="btn btn-sm btn-danger" onclick="deleteJournal(\'' + j.id + '\')">删除</button></div></div>'; }); }
-  h += '<div class="section-title">📊 本周统计</div><div class="card"><div style="font-weight:600;font-size:14px;">总时长: ' + wt.toFixed(1) + 'h</div><div class="tag-bars">';
+  else { tj.forEach(j => {
+    const mins = j.durationMinutes || 0;
+    const displayTime = mins >= 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : mins + 'm';
+    h += '<div class="card"><div class="card-header"><span style="font-weight:500;">' + esc(j.content) + '</span><span class="card-badge badge-gold">' + j.tag + '</span></div><div class="card-meta">⏱ ' + displayTime + '</div><div class="card-actions"><button class="btn btn-sm btn-danger" onclick="deleteJournal(\'' + j.id + '\')">删除</button></div></div>';
+  }); }
+
+  // 本周统计
+  const totalDisplay = wt >= 60 ? Math.floor(wt/60) + 'h ' + (wt%60) + 'm' : wt + 'm';
+  h += '<div class="section-title">📊 本周统计</div><div class="card"><div style="font-weight:600;font-size:14px;">总时长: ' + totalDisplay + '</div><div class="tag-bars">';
   ['作业','阅读','项目','其他'].forEach(tag => { const pct = wt > 0 ? Math.round(tags[tag] / wt * 100) : 0; h += '<div class="tag-bar-row"><span class="tag-name">' + tag + '</span><div class="tag-bar"><div class="tag-fill ' + tag + '" style="width:' + pct + '%"></div></div><span>' + pct + '%</span></div>'; });
-  h += '</div></div><div class="section-title">🔥 本周热力图</div><div class="card"><div class="heatmap">';
-  for (let i = 0; i < 7; i++) { const d = shiftDate(ws, i); const dt2 = DB.journals.filter(j => j.date === d).reduce((s, j) => s + j.duration, 0); let lv = 0; if (dt2 > 0) lv = 1; if (dt2 >= 2) lv = 2; if (dt2 >= 4) lv = 3; if (dt2 >= 6) lv = 4; if (dt2 >= 8) lv = 5; h += '<div class="heat-cell l' + lv + '"' + (d === ts ? ' style="border:2px solid var(--purple);"' : '') + '>' + (lv > 0 ? lv : '') + '</div>'; }
-  h += '</div><div class="heat-labels"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div></div>';
+  h += '</div></div>';
+
+  // Bar Chart (iOS 屏幕使用时间风格)
+  h += '<div class="section-title">📈 本周学习柱状图</div><div class="card">';
+  h += '<div class="bar-chart">';
+  const maxMinutes = Math.max(1, ...Array.from({length:7}, (_, i) => {
+    const d = shiftDate(ws, i);
+    return DB.journals.filter(j => j.date === d).reduce((s, j) => s + j.durationMinutes, 0);
+  }));
+  for (let i = 0; i < 7; i++) {
+    const d = shiftDate(ws, i);
+    const dayTotal = DB.journals.filter(j => j.date === d).reduce((s, j) => s + j.durationMinutes, 0);
+    const heightPct = Math.round(dayTotal / maxMinutes * 100);
+    const isToday = d === ts;
+    const dayLabels = ['日','一','二','三','四','五','六'];
+    const displayVal = dayTotal >= 60 ? Math.floor(dayTotal/60)+'h' : dayTotal+'m';
+    h += '<div class="bar-col">';
+    h += '<div class="bar-value">' + (dayTotal > 0 ? displayVal : '') + '</div>';
+    h += '<div class="bar-fill' + (isToday ? ' today' : '') + '" style="height:' + heightPct + '%;"></div>';
+    h += '<div class="bar-label">' + dayLabels[i] + '</div>';
+    h += '</div>';
+  }
+  h += '</div></div>';
   c.innerHTML = h;
 }
 
+// ==================== 我的Tab（多Term管理） ====================
 function renderMe() {
   const c = document.getElementById('tab-me');
-  const th = DB.journals.reduce((s, j) => s + j.duration, 0);
+  const th = DB.journals.reduce((s, j) => s + j.durationMinutes, 0);
+  const thDisplay = th >= 60 ? Math.floor(th/60) + 'h ' + (th%60) + 'm' : th + 'm';
   const ta = DB.assignments.length;
   const da = DB.assignments.filter(a => a.status === '已评分' || a.status === '已提交').length;
   const ar = ta > 0 ? Math.round(da / ta * 100) : 0;
-  let h = '<div class="stat-grid"><div class="stat-card"><div class="stat-num">' + semesterProgress() + '%</div><div class="stat-label">学期进度</div></div><div class="stat-card"><div class="stat-num gold">' + th.toFixed(0) + 'h</div><div class="stat-label">总学习时长</div></div><div class="stat-card"><div class="stat-num">' + ar + '%</div><div class="stat-label">作业完成率</div></div><div class="stat-card"><div class="stat-num gold">' + DB.streak + '</div><div class="stat-label">连续打卡天数</div></div></div>';
-  h += '<div class="section-title">📅 学期设置</div><div class="card"><form onsubmit="updateSemester(event)"><div class="row"><input type="date" id="semStart" value="' + DB.semesterStart + '"><input type="date" id="semEnd" value="' + DB.semesterEnd + '"></div><button type="submit" class="btn btn-primary btn-block" style="margin-top:6px;">更新学期日期</button></form></div>';
+  const activeTerm = getActiveTerm();
+  
+  let h = '<div class="stat-grid"><div class="stat-card"><div class="stat-num">' + semesterProgress() + '%</div><div class="stat-label">' + (activeTerm ? esc(activeTerm.name) + ' 进度' : '学期进度') + '</div></div><div class="stat-card"><div class="stat-num gold">' + thDisplay + '</div><div class="stat-label">总学习时长</div></div><div class="stat-card"><div class="stat-num">' + ar + '%</div><div class="stat-label">作业完成率</div></div><div class="stat-card"><div class="stat-num gold">' + DB.streak + '</div><div class="stat-label">连续打卡天数</div></div></div>';
+
+  // Term 管理
+  h += '<div class="section-title">📅 学期 (Term) 管理</div>';
+  DB.terms.forEach(term => {
+    const progress = daysBetween(term.start, term.end) > 0 ? Math.round(daysBetween(term.start, today()) / daysBetween(term.start, term.end) * 100) : 0;
+    h += '<div class="card term-card' + (term.active ? ' active-term' : '') + '">';
+    if (term.active) h += '<span class="active-badge">当前</span>';
+    h += '<div class="card-header"><span class="card-title">' + esc(term.name) + '</span></div>';
+    h += '<div class="card-meta">' + term.start + ' → ' + term.end + ' · ' + Math.min(100, Math.max(0, progress)) + '%</div>';
+    h += '<div class="progress-bar"><div class="progress-fill" style="width:' + Math.min(100, Math.max(0, progress)) + '%"></div></div>';
+    h += '<div class="card-actions">';
+    if (!term.active) h += '<button class="btn btn-sm" onclick="activateTerm(\'' + term.id + '\')">设为当前</button>';
+    h += '<button class="btn btn-sm btn-danger" onclick="deleteTerm(\'' + term.id + '\')">删除</button></div></div>';
+  });
+  h += '<button class="btn btn-primary btn-block" style="margin-top:6px;" onclick="openTermEdit()">+ 新增学期</button>';
+
   h += '<div class="section-title">💾 数据管理</div><div class="card" style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn" onclick="exportData()">📤 导出数据</button><button class="btn btn-danger" onclick="resetData()">🗑 重置所有数据</button></div>';
   c.innerHTML = h;
 }
 
+// ==================== 长按删除（作业看板） ====================
+function bindLongPress() {
+  if (DB.deleteMode) {
+    document.querySelectorAll('.mini-card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleSelectForDelete(this.dataset.assignmentId);
+      });
+    });
+  } else {
+    document.querySelectorAll('.mini-card').forEach(card => {
+      let pressTimer;
+      card.addEventListener('touchstart', function(e) {
+        pressTimer = setTimeout(() => {
+          DB.deleteMode = true;
+          DB._selectedForDelete = new Set();
+          DB._selectedForDelete.add(this.dataset.assignmentId);
+          renderAll();
+        }, 600);
+      });
+      card.addEventListener('touchend', function() { clearTimeout(pressTimer); });
+      card.addEventListener('touchmove', function() { clearTimeout(pressTimer); });
+      card.addEventListener('click', function(e) {
+        if (!DB.deleteMode) openAssignmentEdit(this.dataset.assignmentId);
+      });
+    });
+  }
+}
+
+function toggleSelectForDelete(id) {
+  if (!DB._selectedForDelete) DB._selectedForDelete = new Set();
+  if (DB._selectedForDelete.has(id)) DB._selectedForDelete.delete(id);
+  else DB._selectedForDelete.add(id);
+  if (DB._selectedForDelete.size === 0) { DB.deleteMode = false; }
+  renderAll();
+}
+
+function toggleDeleteMode() {
+  DB.deleteMode = !DB.deleteMode;
+  DB._selectedForDelete = new Set();
+  if (DB.deleteMode) {
+    // 进入删除模式
+  } else {
+    // 退出时删除选中的
+    if (DB._selectedForDelete && DB._selectedForDelete.size > 0) {
+      if (!confirm('确定删除 ' + DB._selectedForDelete.size + ' 个作业吗？')) return;
+      DB.assignments = DB.assignments.filter(a => !DB._selectedForDelete.has(a.id));
+    }
+    DB._selectedForDelete = null;
+  }
+  saveDB(); renderAll();
+}
+
+function cancelDeleteMode() {
+  DB.deleteMode = false;
+  DB._selectedForDelete = null;
+  saveDB(); renderAll();
+}
+
+// ==================== 弹窗 ====================
 function showModal(title, bodyHtml, onSave) {
   document.getElementById('modalSheet').innerHTML = '<h3>' + title + '</h3>' + bodyHtml + '<div class="actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn btn-primary" id="modalSaveBtn">保存</button></div>';
   document.getElementById('modal').classList.add('show');
@@ -307,10 +425,11 @@ document.getElementById('modal').addEventListener('click', function(e) { if (e.t
 
 function openCourseEdit(id) {
   const co = id ? DB.courses.find(c2 => c2.id === id) : null;
+  const termOpts = DB.terms.map(t => '<option value="' + t.id + '"' + (co && co.termId === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>').join('');
   showModal(co ? '编辑课程' : '新增课程',
-    '<input type="text" id="cName" value="' + (co ? esc(co.name) : '') + '" placeholder="课程名称" required><input type="text" id="cCode" value="' + (co ? esc(co.code || '') : '') + '" placeholder="课程代码（选填）"><div class="row"><input type="date" id="cStart" value="' + (co ? co.start : DB.semesterStart) + '"><input type="date" id="cEnd" value="' + (co ? co.end : DB.semesterEnd) + '"></div>',
+    '<input type="text" id="cName" value="' + (co ? esc(co.name) : '') + '" placeholder="课程名称" required><input type="text" id="cCode" value="' + (co ? esc(co.code || '') : '') + '" placeholder="课程代码（选填）"><select id="cTerm">' + termOpts + '</select>',
     function() {
-      const d = { name: document.getElementById('cName').value.trim(), code: document.getElementById('cCode').value.trim(), start: document.getElementById('cStart').value, end: document.getElementById('cEnd').value, color: '#5B2C6E' };
+      const d = { name: document.getElementById('cName').value.trim(), code: document.getElementById('cCode').value.trim(), termId: document.getElementById('cTerm').value, color: '#5B2C6E' };
       if (!d.name) return;
       if (co) { Object.assign(co, d); } else { DB.courses.push({ id: uid(), ...d }); }
       saveDB(); renderAll();
@@ -336,15 +455,44 @@ function openAssignmentEdit(id) {
       saveDB(); renderAll();
     });
 }
+
 function addJournal(e) {
   e.preventDefault();
   const content = document.getElementById('journalContent').value.trim();
   if (!content) return;
-  DB.journals.push({ id: uid(), date: today(), content, tag: document.getElementById('journalTag').value, duration: parseFloat(document.getElementById('journalDuration').value) || 1 });
+  const hours = parseInt(document.getElementById('journalHours').value) || 0;
+  const minutes = parseInt(document.getElementById('journalMinutes').value) || 0;
+  const totalMinutes = hours * 60 + minutes;
+  if (totalMinutes <= 0) { alert('请输入有效时长'); return; }
+  DB.journals.push({ id: uid(), date: today(), content, tag: document.getElementById('journalTag').value, durationMinutes: totalMinutes });
   updateStreak(); saveDB(); renderAll();
 }
 function deleteJournal(id) { DB.journals = DB.journals.filter(j => j.id !== id); saveDB(); renderAll(); }
-function updateSemester(e) { e.preventDefault(); DB.semesterStart = document.getElementById('semStart').value; DB.semesterEnd = document.getElementById('semEnd').value; saveDB(); renderAll(); }
+
+// Term 管理
+function openTermEdit() {
+  showModal('新增学期',
+    '<input type="text" id="termName" placeholder="学期名称（如 Term 2）" required><div class="row"><input type="date" id="termStart" value="' + today() + '"><input type="date" id="termEnd" value="' + shiftDate(today(), 120) + '"></div>',
+    function() {
+      const name = document.getElementById('termName').value.trim();
+      if (!name) return;
+      DB.terms.push({ id: uid(), name, start: document.getElementById('termStart').value, end: document.getElementById('termEnd').value, active: false });
+      saveDB(); renderAll();
+    });
+}
+function activateTerm(id) {
+  DB.terms.forEach(t => t.active = (t.id === id));
+  saveDB(); renderAll();
+}
+function deleteTerm(id) {
+  if (DB.terms.length <= 1) { alert('至少保留一个学期'); return; }
+  if (!confirm('删除学期不会删除课程和作业，确定？')) return;
+  const wasActive = DB.terms.find(t => t.id === id)?.active;
+  DB.terms = DB.terms.filter(t => t.id !== id);
+  if (wasActive && DB.terms.length > 0) DB.terms[0].active = true;
+  saveDB(); renderAll();
+}
+
 function exportData() {
   const blob = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -353,8 +501,7 @@ function exportData() {
 }
 function resetData() {
   if (!confirm('确定要删除所有数据吗？此操作不可恢复！\n建议先导出备份。')) return;
-  localStorage.removeItem(STORAGE_KEY);
-  location.reload();
+  localStorage.removeItem(STORAGE_KEY); location.reload();
 }
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 loadDB(); renderAll();
